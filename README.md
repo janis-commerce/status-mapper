@@ -10,13 +10,30 @@
 npm install @janiscommerce/status-mapper
 ```
 
-## API
-
-
 ## Usage
 ```js
 const StatusMapper = require('@janiscommerce/status-mapper');
-
 ```
 
 ## Examples
+```js
+// Status
+StatusMapper.map('active'); // return 1
+StatusMapper.map(1); // return 'active'
+
+StatusMapper.add('example', 20);
+StatusMapper.map('example'); // return 20
+
+StatusMapper.replace({ example: 30 });
+StatusMapper.map('example'); // return 30
+
+// Colors
+StatusMapper.mapToColor('active'); // return 'green'
+StatusMapper.mapToColor(1); // return 'green'
+
+StatusMapper.addColor('example', 'black');
+StatusMapper.mapToColor('example'); // return 'black'
+
+StatusMapper.replaceColor({ example: 'white' });
+StatusMapper.mapToColor('example'); // return 'white'
+```
