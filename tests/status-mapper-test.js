@@ -57,6 +57,17 @@ describe('StatusMapper', () => {
 		});
 	});
 
+	describe('addColor', () => {
+
+		it('Should return error if exist status to add color', () => {
+			assert.throws(() => StatusMapper.addColor('active', 'orange'), { code: StatusMapperError.codes.ALREADY_EXIST });
+		});
+
+		it('Should return undefined if not exist status to add color', () => {
+			assert.strictEqual(StatusMapper.addColor('test', 'orange'), undefined);
+		});
+	});
+
 	describe('replace', () => {
 
 		it('Should return error if not exist status to replace', () => {
@@ -71,6 +82,21 @@ describe('StatusMapper', () => {
 			assert.strictEqual(StatusMapper.replace({ active: 20, ready: 30 }), undefined);
 			assert.strictEqual(StatusMapper.map(20), 'active');
 			assert.strictEqual(StatusMapper.map('ready'), 30);
+		});
+	});
+
+	describe('replaceColor', () => {
+
+		it('Should return error if not exist status to replace color', () => {
+			assert.throws(() => StatusMapper.replaceColor({ 'unknown-status': 'orange' }), { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
+			assert.throws(() => {
+				StatusMapper.replaceColor({ 'unknown-status': 'orange', active: 'black' });
+			}, { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
+		});
+
+		it('Should return undefined if the statuses were replaced and check really color replaced', () => {
+			assert.strictEqual(StatusMapper.replaceColor({ active: 'black' }), undefined);
+			assert.strictEqual(StatusMapper.mapToColor('active'), 'black');
 		});
 	});
 });
