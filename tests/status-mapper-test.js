@@ -8,95 +8,98 @@ describe('StatusMapper', () => {
 
 	describe('map', () => {
 
+		const mapper = new StatusMapper();
+
 		it('Should return error if a status name is not found', () => {
-			assert.throws(() => StatusMapper.map('some-unknown-status-name'), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.throws(() => mapper.map('some-unknown-status-name'), { code: StatusMapperError.codes.NOT_EXIST });
 		});
 
 		it('Should return error if a status ID is not found', () => {
-			assert.throws(() => StatusMapper.map(9999), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.throws(() => mapper.map(9999), { code: StatusMapperError.codes.NOT_EXIST });
 		});
 
 		it('Should return the status ID if a valid status name not found', () => {
-			assert.strictEqual(StatusMapper.map('active'), 1);
+			assert.strictEqual(mapper.map('active'), 1);
 		});
 
 		it('Should return the status name if a valid status ID not found', () => {
-			assert.strictEqual(StatusMapper.map(1), 'active');
+			assert.strictEqual(mapper.map(1), 'active');
 		});
 
 	});
 
 	describe('mapToColor', () => {
 
+		const mapper = new StatusMapper();
+
 		it('Should return error if a status name is not found', () => {
-			assert.throws(() => StatusMapper.mapToColor('some-unknown-status-name'), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.throws(() => mapper.mapToColor('some-unknown-status-name'), { code: StatusMapperError.codes.NOT_EXIST });
 		});
 
 		it('Should return error if a status ID is not found', () => {
-			assert.throws(() => StatusMapper.mapToColor(9999), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.throws(() => mapper.mapToColor(9999), { code: StatusMapperError.codes.NOT_EXIST });
 		});
 
 		it('Should return the status color if a valid status name not found', () => {
-			assert.strictEqual(StatusMapper.mapToColor('active'), 'green');
+			assert.strictEqual(mapper.mapToColor('active'), 'green');
 		});
 
 		it('Should return the status color if a valid status ID not found', () => {
-			assert.strictEqual(StatusMapper.mapToColor(1), 'green');
+			assert.strictEqual(mapper.mapToColor(1), 'green');
 		});
 
 	});
 
-	describe('add', () => {
+	describe('set', () => {
 
-		it('Should return error if exist status to add', () => {
-			assert.throws(() => StatusMapper.add('active', 101), { code: StatusMapperError.codes.ALREADY_EXIST });
+		const mapper = new StatusMapper();
+
+		it('Should return error if set a invalid status name', () => {
+			assert.throws(() => mapper.set(1, 'statusName'), { code: StatusMapperError.codes.INVALID_DATA });
 		});
 
-		it('Should return undefined if not exist status to add', () => {
-			assert.strictEqual(StatusMapper.add('test', 110), undefined);
+		it('Should set and get the new status', () => {
+			assert.strictEqual(mapper.set('newStatus', 10), undefined);
+			assert.strictEqual(mapper.map('newStatus'), 10);
 		});
+
 	});
 
-	describe('addColor', () => {
+	describe('setColor', () => {
 
-		it('Should return error if exist status to add color', () => {
-			assert.throws(() => StatusMapper.addColor('active', 'orange'), { code: StatusMapperError.codes.ALREADY_EXIST });
+		const mapper = new StatusMapper();
+
+		it('Should return error if set a invalid color name', () => {
+			assert.throws(() => mapper.setColor('statusName', 1), { code: StatusMapperError.codes.INVALID_DATA });
 		});
 
-		it('Should return undefined if not exist status to add color', () => {
-			assert.strictEqual(StatusMapper.addColor('test', 'orange'), undefined);
+		it('Should set and get the new color status', () => {
+			assert.strictEqual(mapper.setColor('statusName', 'black'), undefined);
+			assert.strictEqual(mapper.mapToColor('statusName'), 'black');
 		});
 	});
 
 	describe('replace', () => {
 
-		it('Should return error if not exist status to replace', () => {
-			assert.throws(() => StatusMapper.replace({ 'unknown-status': 120 }), { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
-			assert.throws(() => StatusMapper.replace({ 'unknown-status': 120, active: 101 }), { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
-		});
+		const mapper = new StatusMapper();
 
-		it('Should return undefined if the statuses were replaced and check really replaced', () => {
-			assert.strictEqual(StatusMapper.replace({ active: 101 }), undefined);
-			assert.strictEqual(StatusMapper.map(101), 'active');
-
-			assert.strictEqual(StatusMapper.replace({ active: 20, ready: 30 }), undefined);
-			assert.strictEqual(StatusMapper.map(20), 'active');
-			assert.strictEqual(StatusMapper.map('ready'), 30);
+		it('Replace status', () => {
+			assert.strictEqual(mapper.map('active'), 1);
+			assert.strictEqual(mapper.replace({ otherStatus: 5 }), undefined);
+			assert.throws(() => mapper.map('active'), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.strictEqual(mapper.map('otherStatus'), 5);
 		});
 	});
 
 	describe('replaceColor', () => {
 
-		it('Should return error if not exist status to replace color', () => {
-			assert.throws(() => StatusMapper.replaceColor({ 'unknown-status': 'orange' }), { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
-			assert.throws(() => {
-				StatusMapper.replaceColor({ 'unknown-status': 'orange', active: 'black' });
-			}, { code: StatusMapperError.codes.NOT_EXIST_TO_REPLACE });
-		});
+		const mapper = new StatusMapper();
 
-		it('Should return undefined if the statuses were replaced and check really color replaced', () => {
-			assert.strictEqual(StatusMapper.replaceColor({ active: 'black' }), undefined);
-			assert.strictEqual(StatusMapper.mapToColor('active'), 'black');
+		it('Replace status', () => {
+			assert.strictEqual(mapper.mapToColor('active'), 'green');
+			assert.strictEqual(mapper.replaceColor({ otherStatus: 'black' }), undefined);
+			assert.throws(() => mapper.mapToColor('active'), { code: StatusMapperError.codes.NOT_EXIST });
+			assert.strictEqual(mapper.mapToColor('otherStatus'), 'black');
 		});
 	});
 });
