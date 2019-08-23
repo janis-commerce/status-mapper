@@ -1,7 +1,7 @@
 {
   "name": "@janiscommerce/status-mapper",
   "version": "1.0.0",
-  "description": "",
+  "description": "A customizable status mapper",
   "main": "index.js",
   "scripts": {
     "test": "export TEST_ENV=true; mocha --exit -R nyan --recursive tests/",
