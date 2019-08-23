@@ -31,5 +31,8 @@
   ],
   "directories": {
     "test": "tests"
+  },
+  "dependencies": {
+    "lodash.invert": "^4.3.0"
   }
 }
