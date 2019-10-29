@@ -2,7 +2,8 @@
 
 const assert = require('assert');
 
-const { StatusMapper, StatusMapperError } = require('./../lib');
+const StatusMapper = require('./../lib/status-mapper');
+const StatusMapperError = require('./../lib/status-mapper-error');
 
 describe('StatusMapper', () => {
 
